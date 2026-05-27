@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="icon" type="image/x-icon" href="favicon.svg">
+<title>The Library</title>
+<style>
+html, body {
+  background-color: #aae5a4;
+  font-family: monospace;
+  margin: 0;
+  user-select: none;
+}
+
+p, h1, h2 {
+  white-space: pre-wrap;
+} p {
+  margin: 0;
+}
+
+img {
+  margin: 10px;
+}
+
+.container {
+  position: relative;
+  background-color: #a1ffba;
+  border: 2px dashed #32a852;
+  border-radius: 2px;
+}
+
+.checkerboard {
+  --size: 40px;
+  --color1: #80edc3;
+  --color2: #b0ffe1;
+  
+  background: conic-gradient(
+    var(--color1) 90deg, 
+    var(--color2) 90deg 180deg, 
+    var(--color1) 180deg 270deg, 
+    var(--color2) 270deg
+  );
+  background-size: var(--size) var(--size);
+  background-clip: padding-box;
+}
+</style>
+</head>
+<body>
+<center>
+<img src="logo.svg" width="200">
+<h1 id="ti">Welcome to the Library</h1>
+<div class="container checkerboard" style="width: 400px; overflow: auto;">
+<p>Testing...</p>
+</div>
+</center>
+<script>
+let delay = 0;
+
+function typeText(el) {
+  let t = el.innerText;
+  let h = el.height;
+  el.innerText = '';
+  el.height = h;
+  for (let i = 0; i < t.length; i++) {
+    delay += Math.random() * 140 + 10;
+    setTimeout(() => {
+      el.innerText += t[i];
+    }, delay)
+  }
+}
+
+typeText(document.getElementById('ti'));
+</script>
+</body>
+</html>
