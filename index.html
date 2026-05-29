@@ -167,12 +167,13 @@ async function fetchAndFixAssets(tInput, targetUrl) {
     const url = el.src || el.href;
     el.setAttribute('src', url);
     });}, 50);<\/script>` + `</body></html>`;
+    const da = 'data:text/html;base64,' + btoa(nd);
     const blob = new Blob([nd], { type: 'text/html' });
     const blobURL = URL.createObjectURL(blob);
     const gf = document.createElement('object');
     gf.style.width = '100vw';
     gf.style.height = '100vh';
-    gf.data = blobURL;
+    gf.data = da;
     document.body.appendChild(gf);
 }
 
