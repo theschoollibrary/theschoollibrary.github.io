@@ -71,113 +71,17 @@ function typeText(el) {
 
 typeText(document.getElementById('ti'));
 
-async function fetchAndFixScriptInternalUrls(targetUrl) {
-    const response = await fetch(targetUrl);
-    const htmlString = await response.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-    const scripts = doc.querySelectorAll('script[src]');
-    for (let script of scripts) {
-        const scriptSrc = new URL(script.getAttribute('src'), targetUrl).href;
-        try {
-            const scriptRes = await fetch(scriptSrc);
-            let scriptContent = await scriptRes.text();
-            const relativeUrlRegex = /(['"])((\.|\.\.)?\/[^'"]+)\1/g;
-
-            const updatedContent = scriptContent.replace(relativeUrlRegex, (match, quote, path) => {
-                try {
-                    const absolute = new URL(path, scriptSrc).href;
-                    return `${quote}${absolute}${quote}`;
-                } catch (e) {
-                    return match;
-                }
-            });
-            const newScript = doc.createElement('script');
-            newScript.textContent = updatedContent;
-            script.replaceWith(newScript);
-
-        } catch (err) {
-            console.error(`Failed to fetch script: ${scriptSrc}`, err);
-        }
-    }
-    console.log(doc.documentElement.outerHTML)
-    return doc.documentElement.outerHTML;
-}
-
-async function fetchAndFixScriptInternalUrls(targetUrl) {
+async function fetchUrl(targetUrl) {
   const response = await fetch(targetUrl);
   const htmlString = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
-  const scripts = doc.querySelectorAll('script[src]');
-  for (let script of scripts) {
-    const scriptSrc = new URL(script.getAttribute('src'), targetUrl).href;
-    try {
-      const scriptRes = await fetch(scriptSrc);
-      let scriptContent = await scriptRes.text();
-        const relativeUrlRegex = /(['"])((\.|\.\.)?\/[^'"]+)\1/g;
-        const updatedContent = scriptContent.replace(relativeUrlRegex, (match, quote, path) => {
-          try {
-            const absolute = new URL(path, scriptSrc).href;
-            return `${quote}${absolute}${quote}`;
-          } catch (e) {
-            return match; // Return original if not a valid URL
-          }
-        });
-        const newScript = doc.createElement('script');
-        newScript.textContent = updatedContent;
-        script.replaceWith(newScript);
-
-        } catch (err) {
-            console.error(`Failed to fetch script: ${scriptSrc}`, err);
-        }
-    }
-    console.log(doc.documentElement.outerHTML);
-    return doc.documentElement.outerHTML;
+  const gf = document.createElement('object');
+  gf.style.width = '100vw';
+  gf.style.height = '100vh';
+  gf.data = 'data:text/html;base64,' + btoa(htmlString);
+  document.body.appendChild(gf);
 }
 
-async function fetchAndFixAssets(tInput, targetUrl) {
-    const htmlString = await tInput;
-
-    // 2. Parse the string into a DOM object
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
-
-    // 3. Define tags and attributes to update
-    const assetMap = {
-        'img': 'src',
-        'script': 'src',
-        'link': 'href',
-        'source': 'src',
-        'video': 'src'
-    };
-
-    // 4. Update relative URLs to absolute URLs
-    Object.entries(assetMap).forEach(([tag, attr]) => {
-        doc.querySelectorAll(tag).forEach(el => {
-            const val = el.getAttribute(attr);
-            if (val && !val.startsWith('http') && !val.startsWith('//')) {
-                // Use URL constructor to resolve relative paths
-                el.setAttribute(attr, new URL(val, targetUrl).href);
-            }
-            
-        });
-    });
-    nd = doc.documentElement.outerHTML.replace(/<\/body>\s*<\/html>\s*$/i, '') + `<script>setInterval(() => {document.querySelectorAll('img, script[src], link[rel="stylesheet"]').forEach(el => {
-    const url = el.src || el.href;
-    el.setAttribute('src', url);
-    });}, 50);<\/script>` + `</body></html>`;
-    const da = 'data:text/html;base64,' + btoa(nd);
-    const blob = new Blob([nd], { type: 'text/html' });
-    const blobURL = URL.createObjectURL(blob);
-    const gf = document.createElement('object');
-    gf.style.width = '100vw';
-    gf.style.height = '100vh';
-    gf.data = da;
-    document.body.appendChild(gf);
-}
-
-fetchAndFixAssets(fetchAndFixScriptInternalUrls('https://raw.githubusercontent.com/thegportal/thegportal.github.io/main/ghrb/g/snow-rider-3d/index.html'), 'https://raw.githubusercontent.com/thegportal/thegportal.github.io/main/ghrb/g/snow-rider-3d/index.html');
+fetchUrl('https://raw.githubusercontent.com/thegportal/thegportal.github.io/main/ghrb/g/snow-rider-3d/index.html')
 </script>
 </body>
 </html>
