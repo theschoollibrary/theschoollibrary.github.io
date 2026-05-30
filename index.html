@@ -43,6 +43,10 @@ img {
   background-size: var(--size) var(--size);
   background-clip: padding-box;
 }
+
+iframe {
+  border: none;
+}
 </style>
 </head>
 <body>
@@ -74,10 +78,12 @@ typeText(document.getElementById('ti'));
 async function fetchUrl(targetUrl) {
   const response = await fetch(targetUrl);
   const htmlString = await response.text();
-  const gf = document.createElement('object');
+  const gf = document.createElement('iframe');
   gf.style.width = '100vw';
   gf.style.height = '100vh';
-  gf.data = 'data:text/html;base64,' + btoa(htmlString);
+  const blob = new Blob([htmlString], { type: 'text/html' });
+  const blobURL = URL.createObjectURL(blob);
+  gf.srcdoc = htmlString;
   document.body.appendChild(gf);
 }
 
