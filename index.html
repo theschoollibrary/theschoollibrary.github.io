@@ -81,8 +81,6 @@ async function fetchUrl(targetUrl) {
   const gf = document.createElement('iframe');
   gf.style.width = '100vw';
   gf.style.height = '100vh';
-  const blob = new Blob([htmlString], { type: 'text/html' });
-  const blobURL = URL.createObjectURL(blob);
   gf.srcdoc = htmlString;
   document.body.appendChild(gf);
 }
